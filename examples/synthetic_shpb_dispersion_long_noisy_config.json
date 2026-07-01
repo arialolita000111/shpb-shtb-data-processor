@@ -1,0 +1,112 @@
+{
+  "acquisition": {
+    "sampling_frequency_hz": 5000000.0,
+    "time_unit": "us",
+    "strain_unit": "με",
+    "signal_start_time_s": 0.0
+  },
+  "bar": {
+    "incident_diameter_m": 0.0145,
+    "transmitted_diameter_m": 0.0145,
+    "elastic_modulus_pa": 200000000000.0,
+    "density_kg_m3": 7800.0,
+    "material_name": "steel",
+    "poisson_ratio": 0.3,
+    "wave_speed_m_s": 5063.696835418333,
+    "incident_gauge_distance_m": 1.0,
+    "transmitted_gauge_distance_m": 0.75
+  },
+  "specimen": {
+    "shape": "cylinder",
+    "length_m": 0.008,
+    "experiment_type": "compression",
+    "diameter_m": 0.01,
+    "specimen_id": "sample",
+    "material_name": "unknown"
+  },
+  "table": {
+    "sheet_name": 0,
+    "header": "auto",
+    "skiprows": 0,
+    "n_preview_rows": 5000
+  },
+  "preprocessing": {
+    "baseline_method": "start_mean",
+    "filter_method": "none",
+    "filter_window_points": 11,
+    "filter_order": 4,
+    "remove_nan_rows": true
+  },
+  "pulse_detection": {
+    "threshold_sigma": 6.0,
+    "relative_threshold": 0.08,
+    "noise_fraction": 0.1,
+    "min_duration_s": 0.0,
+    "auto_padding_fraction": 0.1,
+    "min_auto_padding_s": 5e-06,
+    "max_auto_padding_s": 1e-05,
+    "fixed_windows": {
+      "incident": {
+        "start_s": 0.00014251582341868503,
+        "end_s": 0.000363515823418685,
+        "label": "incident",
+        "confidence": 1.0
+      },
+      "reflected": {
+        "start_s": 0.0005374841765813151,
+        "end_s": 0.000758484176581315,
+        "label": "reflected",
+        "confidence": 1.0
+      },
+      "transmitted": {
+        "start_s": 0.0004881131324359863,
+        "end_s": 0.0007091131324359863,
+        "label": "transmitted",
+        "confidence": 1.0
+      }
+    }
+  },
+  "alignment": {
+    "auto_micro_adjust": true,
+    "alignment_objective": "force_balance",
+    "known_distance_search_limit_s": 1e-05,
+    "known_distance_pulse_fraction": 0.25,
+    "unknown_distance_pulse_fraction": 0.5,
+    "max_iterations": 8,
+    "pass_error_threshold": 0.15,
+    "review_error_threshold": 0.3,
+    "min_overlap_points": 20,
+    "min_peak_strain": 1e-12,
+    "min_overlap_incident_peak_fraction": 0.5,
+    "min_transmitted_peak_fraction": 0.02,
+    "improvement_tolerance": 1e-06,
+    "align_unknown_distances": true,
+    "force_balance_active_fraction": 0.05,
+    "hybrid_force_balance_weight": 0.7
+  },
+  "calculation": {
+    "zero_reference_enabled": true,
+    "zero_reference_fraction": 0.05,
+    "zero_reference_min_points": 3,
+    "force_zero_initial_strain": true,
+    "force_zero_initial_stress": true,
+    "wave_head_ratio_threshold": 0.05
+  },
+  "dispersion": {
+    "enabled": true,
+    "model": "frequency_domain",
+    "poisson_ratio": 0.3,
+    "phase_strength": 0.16,
+    "amplitude_correction": true,
+    "amplitude_strength": 0.04,
+    "taper_fraction": 0.05
+  },
+  "sign_convention": "compression_positive",
+  "output": {
+    "include_excel_workbook": true,
+    "include_html_report": true,
+    "include_pdf_report": true,
+    "include_figures": true,
+    "report_title": "Dispersion correction example - synthetic_shpb_dispersion_long_noisy"
+  }
+}

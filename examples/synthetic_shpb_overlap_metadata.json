@@ -1,0 +1,20 @@
+{
+  "case":"overlap",
+  "sampling_frequency_hz":5000000.0,
+  "time_unit":"us",
+  "strain_unit":"με",
+  "incident_diameter_m":0.0145,
+  "transmitted_diameter_m":0.0145,
+  "elastic_modulus_pa":200000000000.0,
+  "density_kg_m3":7800.0,
+  "wave_speed_m_s":5063.6968354183,
+  "incident_gauge_distance_m":0.18,
+  "transmitted_gauge_distance_m":0.25,
+  "specimen_diameter_m":0.01,
+  "specimen_length_m":0.008,
+  "expected_interface_start_s":0.00016,
+  "expected_pulse_width_s":0.00006,
+  "expected_peak_incident_strain":0.0008,
+  "expected_peak_reflected_strain":-0.00032,
+  "expected_peak_transmitted_strain":0.00048
+}

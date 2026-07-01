@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "profiles": {
+    "default": {
+      "version": 1,
+      "updated_at": "2026-05-23T12:41:01",
+      "windows_us": {
+        "incident_start_us": 104.973,
+        "incident_end_us": 497.879,
+        "reflected_start_us": 700.0,
+        "reflected_end_us": 1200.321,
+        "transmitted_start_us": 872.393,
+        "transmitted_end_us": 1154.732
+      },
+      "alignment": {
+        "auto_micro_adjust": true,
+        "alignment_objective": "force_balance"
+      },
+      "dispersion": {
+        "enabled": false
+      },
+      "acquisition": {
+        "time_unit": "s",
+        "strain_unit": "με",
+        "voltage_to_microstrain_per_volt": null
+      },
+      "bar": {
+        "incident_diameter_mm": 25.0,
+        "transmitted_diameter_mm": 25.0,
+        "elastic_modulus_gpa": 210.0,
+        "density_kg_m3": 7800.0,
+        "incident_gauge_distance_mm": 1800.0,
+        "transmitted_gauge_distance_mm": 1930.0,
+        "wave_speed_m_s": 5188.75
+      },
+      "last_alignment_result": {
+        "incident_shift_us": 346.90468019739535,
+        "reflected_shift_us": -342.40468019739535,
+        "transmitted_shift_us": -361.95890710054056,
+        "force_balance_error": 0.5089706536439694,
+        "status": "failed"
+      }
+    },
+    "test-1": {
+      "version": 1,
+      "updated_at": "2026-05-21T17:32:59",
+      "windows_us": {
+        "incident_start_us": 70.732,
+        "incident_end_us": 184.625,
+        "reflected_start_us": 465.937,
+        "reflected_end_us": 573.572,
+        "transmitted_start_us": 413.707,
+        "transmitted_end_us": 616.234
+      },
+      "alignment": {
+        "auto_micro_adjust": true,
+        "alignment_objective": "force_balance"
+      },
+      "bar": {
+        "incident_diameter_mm": 14.5,
+        "transmitted_diameter_mm": 14.5,
+        "elastic_modulus_gpa": 200.0,
+        "density_kg_m3": 7800.0,
+        "incident_gauge_distance_mm": 500.0,
+        "transmitted_gauge_distance_mm": 250.0,
+        "wave_speed_m_s": 5063.7
+      },
+      "last_alignment_result": {
+        "incident_shift_us": 0.0,
+        "reflected_shift_us": -395.1958010002351,
+        "transmitted_shift_us": -342.9723558802041,
+        "force_balance_error": 0.11804689413756064,
+        "status": "passed"
+      }
+    }
+  }
+}

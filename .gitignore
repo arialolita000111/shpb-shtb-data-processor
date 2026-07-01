@@ -1,0 +1,47 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local editor and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Generated outputs
+output/
+reports/
+exports/
+*_batch_output/
+*_batch_output_*/
+archive/
+
+# GUI/manual generated report packages inside example folders
+examples/**/test-*_report/
+examples/**/SHPB_SHTB_Result.xlsx
+
+# Local application state
+config/settings.json
+abq.app_cache
+*.exception

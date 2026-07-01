@@ -1,0 +1,15 @@
+# Experiment Details: 18CrNiMo7-6 Impact Tension
+
+Note: A few characters in the legacy `实验详情.txt` file were already corrupted and cannot be recovered reliably. Unreadable numeric prefixes are marked below.
+
+- Test type: impact tension
+- Material: 18CrNiMo7-6
+- Incident bar length: unreadable prefix + `800 mm`
+- Transmitted bar length: unreadable prefix + `800 mm`
+- Bar diameter: unreadable prefix + `0 mm`
+- Specimen parallel-section length: unreadable prefix + `0 mm`
+- Specimen diameter: `2.5 mm`
+- Bar elastic modulus: `207 GPa`
+- Bar density: unreadable prefix + `800 kg/m^3`
+- Incident-bar strain gauge distance to specimen end face: `839 mm`
+- Transmitted-bar strain gauge distance to specimen end face: `877 mm`

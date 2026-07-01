@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+title: "SHPB/SHTB Data Processor"
+version: "1.0.0"
+date-released: "2026-05-21"
+authors:
+  - name: "SHPB/SHTB Data Processor Team"
+license: "MIT"
+repository-code: "https://github.com/your-org/shpb-shtb-data-processor"
+url: "https://github.com/your-org/shpb-shtb-data-processor"
+keywords:
+  - "split Hopkinson pressure bar"
+  - "split Hopkinson tension bar"
+  - "stress waves"
+  - "high strain rate"
+  - "signal processing"
+  - "research software"
+abstract: >
+  A reproducible Python toolkit for processing SHPB/SHTB strain-gauge data,
+  including pulse detection, wave alignment, two-wave and three-wave reduction,
+  quality assessment, batch processing, and report generation.
