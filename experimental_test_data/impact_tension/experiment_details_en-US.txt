@@ -9,5 +9,5 @@
 - Specimen diameter: `2.5 mm`
 - Bar elastic modulus: `207 GPa`
 - Bar density: `7800 kg/m^3`
-- Incident-bar strain gauge distance to specimen end face: `951 mm`
-- Transmitted-bar strain gauge distance to specimen end face: `912 mm`
+- Incident-bar strain gauge distance to specimen end face: `839 mm`
+- Transmitted-bar strain gauge distance to specimen end face: `877 mm`
