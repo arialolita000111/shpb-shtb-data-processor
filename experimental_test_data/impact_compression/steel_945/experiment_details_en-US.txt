@@ -1,15 +1,13 @@
 # Experiment Details: 945 Steel Impact Compression
 
-Note: A few characters in the legacy `实验详情.txt` file were already corrupted and cannot be recovered reliably. Unreadable numeric prefixes are marked below.
-
 - Test type: impact compression
 - Material: 945 steel
-- Incident bar length: unreadable prefix + `100 mm`
-- Transmitted bar length: unreadable prefix + `800 mm`
-- Bar diameter: unreadable prefix + `0 mm`
+- Incident bar length: `2100 mm`
+- Transmitted bar length: `1800 mm`
+- Bar diameter: `20 mm`
 - Specimen length: `4 mm`
 - Specimen diameter: `8 mm`
 - Bar elastic modulus: `210 GPa`
-- Bar density: unreadable prefix + `800 kg/m^3`
-- Incident-bar strain gauge distance to specimen end face: unreadable prefix + `020 mm`
-- Transmitted-bar strain gauge distance to specimen end face: unreadable prefix + `70 mm`
+- Bar density: `7800 kg/m^3`
+- Incident-bar strain gauge distance to specimen end face: `1020 mm`
+- Transmitted-bar strain gauge distance to specimen end face: `770 mm`
