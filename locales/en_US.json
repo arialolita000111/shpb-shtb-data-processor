@@ -1,6 +1,6 @@
 {
   "app.title": "SHPB/SHTB Data Processor",
-  "menu.language": "Language",
+  "menu.language": "语言",
   "dialog.language_saved.title": "Language setting saved",
   "dialog.language_saved.message": "Language changed to {language}. Logs and new prompts use the new language immediately; restart the software for the full interface to take effect.",
   "log.language_saved": "Language setting saved: {language}. Restart for the full interface to take effect.",

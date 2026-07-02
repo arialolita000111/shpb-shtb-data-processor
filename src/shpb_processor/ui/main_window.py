@@ -151,6 +151,7 @@ class MainWindow(QMainWindow):
 
         pg.setConfigOptions(antialias=True)
         self._language_actions: dict[str, QAction] = {}
+        self._language_menu = None
         self._build_language_menu()
         self._build_ui()
         self._set_plot_style_controls(self._plot_style)
@@ -162,6 +163,7 @@ class MainWindow(QMainWindow):
 
     def _build_language_menu(self) -> None:
         language_menu = self.menuBar().addMenu(tr("menu.language"))
+        self._language_menu = language_menu
         group = QActionGroup(self)
         group.setExclusive(True)
         for code, display_name in SUPPORTED_LANGUAGES.items():
@@ -175,6 +177,7 @@ class MainWindow(QMainWindow):
 
     def _change_language(self, language: str) -> None:
         set_language(language)
+        self._refresh_language_menu_labels()
         for code, action in self._language_actions.items():
             action.setChecked(code == language)
         if hasattr(self, "log"):
@@ -184,6 +187,12 @@ class MainWindow(QMainWindow):
             tr("dialog.language_saved.title"),
             tr("dialog.language_saved.message", language=SUPPORTED_LANGUAGES.get(language, language)),
         )
+
+    def _refresh_language_menu_labels(self) -> None:
+        if self._language_menu is not None:
+            self._language_menu.setTitle(tr("menu.language"))
+        for code, action in self._language_actions.items():
+            action.setText(SUPPORTED_LANGUAGES.get(code, code))
 
     def _build_ui(self) -> None:
         root = QWidget()
