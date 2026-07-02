@@ -18,36 +18,36 @@
 适用数据文件：`gauge_strain_records.csv`。`manual_processing_example/` 中的文件是人工处理参考结果，不建议作为软件原始输入。
 
 1. 数据导入
-- 点击 `Import CSV/XLSX` / `导入 CSV/XLSX`，选择 `gauge_strain_records.csv`。
-- `Time column` / `时间列`：选择 `time_s`。
-- `Incident bar column` / `入射杆列`：选择 `gauge1_incident_bar_strain`。
-- `Transmitted bar column` / `透射杆列`：选择 `gauge2_transmission_bar_strain`。
+- 点击 `导入 CSV/XLSX`，选择 `gauge_strain_records.csv`。
+- `时间列`：选择 `time_s`。
+- `入射杆列`：选择 `gauge1_incident_bar_strain`。
+- `透射杆列`：选择 `gauge2_transmission_bar_strain`。
 
 2. 采集与预处理
-- `Time unit` / `时间单位`：选择 `s`。
-- `Strain unit` / `应变单位`：选择 `strain`。
-- `Baseline correction` / `基线修正`：新手建议先使用默认 `start_mean`。
-- `Filter method` / `滤波方式`：新手建议先选 `none`；如果波形噪声明显，再尝试 `moving_average`。
+- `时间单位`：选择 `s`。
+- `应变单位`：选择 `strain`。
+- `基线修正`：新手建议先使用默认 `start_mean`。
+- `滤波方式`：新手建议先选 `none`；如果波形噪声明显，再尝试 `moving_average`。
 
 3. 杆件参数
-- `Incident bar diameter mm` / `入射杆直径 mm`：`16`
-- `Transmitted bar diameter mm` / `透射杆直径 mm`：`16`
-- `Elastic modulus GPa` / `弹性模量 GPa`：`206`
-- `Density kg/m3` / `密度 kg/m3`：`7850`
-- `Incident gauge distance mm` / `入射应变片距端 mm`：`250`
-- `Transmitted gauge distance mm` / `透射应变片距端 mm`：`250`
-- `Transmitted gauge to free end mm` / `透射片距自由端 mm`：`750`
+- `入射杆直径 mm`：`16`
+- `透射杆直径 mm`：`16`
+- `弹性模量 GPa`：`206`
+- `密度 kg/m3`：`7850`
+- `入射应变片距端 mm`：`250`
+- `透射应变片距端 mm`：`250`
+- `透射片距自由端 mm`：`750`
 
 4. 试样与符号
-- `Section shape` / `截面形状`：选择 `cylinder`。
-- `Specimen diameter mm` / `试样直径 mm`：`8`
-- `Initial height/gauge length mm` / `初始高度/标距 mm`：`6`
-- `Experiment type` / `实验类型`：选择 `compression`。
-- `Sign convention` / `符号约定`：建议选择 `compression_positive`。
+- `截面形状`：选择 `cylinder`。
+- `试样直径 mm`：`8`
+- `初始高度/标距 mm`：`6`
+- `实验类型`：选择 `compression`。
+- `符号约定`：建议选择 `compression_positive`。
 
 5. 波形分离处理与导出
-- 勾选 `Enable standard SHPB wave separation` / `启用标准SHPB波形分离`。
-- 保持 `Enable automatic fine alignment` / `启用自动微调对齐` 为勾选状态。
-- 点击 `Auto process` / `自动处理`。
-- 重点复核 `Standard wave separation` / `标准波形分离`、`Results` / `计算结果` 和 `Workflow status and result summary` / `流程状态与结果摘要`。
-- 若结果合理，点击 `Export Excel` / `导出 Excel` 或 `Generate report` / `生成报告` 导出结果。
+- 勾选 `启用标准SHPB波形分离`。
+- 保持 `启用自动微调对齐` 为勾选状态。
+- 点击 `自动处理`。
+- 重点复核 `标准波形分离`、`计算结果` 和 `流程状态与结果摘要`。
+- 若结果合理，点击 `导出 Excel` 或 `生成报告` 导出结果。
