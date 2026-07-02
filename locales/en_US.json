@@ -1,9 +1,9 @@
 {
   "app.title": "SHPB/SHTB Data Processor",
-  "menu.language": "Language",
+  "menu.language": "语言",
   "dialog.language_saved.title": "Language setting saved",
-  "dialog.language_saved.message": "Language changed to {language}. Logs and new prompts use the new language immediately; restart the software for the full interface to take effect.",
-  "log.language_saved": "Language setting saved: {language}. Restart for the full interface to take effect.",
+  "dialog.language_saved.message": "Language changed to {language}. The current interface has been refreshed, and new logs and prompts will use the selected language.",
+  "log.language_saved": "Language setting saved: {language}. The current interface has been refreshed.",
   "group.import_data": "1. Data import",
   "button.import_data": "Import CSV/XLSX",
   "button.load_sample": "Load standard sample",

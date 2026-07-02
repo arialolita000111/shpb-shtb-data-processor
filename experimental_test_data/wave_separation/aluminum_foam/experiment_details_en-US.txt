@@ -12,3 +12,42 @@
 - Incident-bar strain gauge distance to specimen end face: `250 mm`
 - Transmitted-bar strain gauge distance to specimen end face: `250 mm`
 - Transmitted-bar strain gauge distance to free end: `1350 mm`
+
+## Software Input Guide
+
+Applicable data file: `gauge_strain_records.csv`. Files under `manual_processing_example/` are reference results from manual processing and should not be used as the raw software input.
+
+1. Data import
+- Click `Import CSV/XLSX`, then choose `gauge_strain_records.csv`.
+- `Time column`: select `time_s`.
+- `Incident bar column`: select `gauge1_incident_bar_strain`.
+- `Transmitted bar column`: select `gauge2_transmission_bar_strain`.
+
+2. Acquisition and preprocessing
+- `Time unit`: select `s`.
+- `Strain unit`: select `strain`.
+- `Baseline correction`: beginners can keep the default `start_mean`.
+- `Filter method`: beginners can start with `none`; try `moving_average` only if the waveform is visibly noisy.
+
+3. Bar parameters
+- `Incident bar diameter mm`: `50`
+- `Transmitted bar diameter mm`: `50`
+- `Elastic modulus GPa`: `206`
+- `Density kg/m3`: `7850`
+- `Incident gauge distance mm`: `250`
+- `Transmitted gauge distance mm`: `250`
+- `Transmitted gauge to free end mm`: `1350`
+
+4. Specimen and sign convention
+- `Section shape`: select `cylinder`.
+- `Specimen diameter mm`: `30`
+- `Initial height/gauge length mm`: `15`
+- `Experiment type`: select `compression`.
+- `Sign convention`: select `compression_positive`.
+
+5. Wave-separation processing and export
+- Check `Enable standard SHPB wave separation`.
+- Keep `Enable automatic fine alignment` checked.
+- Click `Auto process`.
+- Focus your review on `Standard wave separation`, `Results`, and `Workflow status and result summary`.
+- If the results are reasonable, click `Export Excel` or `Generate report`.

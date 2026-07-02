@@ -1,9 +1,9 @@
 {
   "app.title": "SHPB/SHTB 数据处理软件",
-  "menu.language": "语言",
+  "menu.language": "Language",
   "dialog.language_saved.title": "语言设置已保存",
-  "dialog.language_saved.message": "语言已切换为 {language}。日志和新提示会立即使用新语言，完整界面请重启软件后生效。",
-  "log.language_saved": "语言设置已保存：{language}。完整界面将在重启后生效。",
+  "dialog.language_saved.message": "语言已切换为 {language}。当前界面已刷新，后续日志和提示也会使用新语言。",
+  "log.language_saved": "语言设置已保存：{language}。当前界面已刷新。",
   "group.import_data": "1. 数据导入",
   "button.import_data": "导入 CSV/XLSX",
   "button.load_sample": "载入标准样例",

@@ -11,3 +11,41 @@
 - Bar density: `7800 kg/m^3`
 - Incident-bar strain gauge distance to specimen end face: `839 mm`
 - Transmitted-bar strain gauge distance to specimen end face: `877 mm`
+
+## Software Input Guide
+
+Applicable data files: `18crnimo7_6_steel/sample_01/raw_strain.xlsx` or `18crnimo7_6_steel/sample_02/raw_strain.xlsx`
+
+1. Data import
+- Click `Import CSV/XLSX`, then choose `raw_strain.xlsx`.
+- `Time column`: select `time_s` or `Time/s`.
+- `Incident bar column`: select the incident-bar strain column, such as `incident_strain/ε` or `incident_bar_signal/ε`.
+- `Transmitted bar column`: select the transmitted-bar strain column, such as `transmitted_strain/ε` or `transmission_bar_signal/ε`.
+
+2. Acquisition and preprocessing
+- `Time unit`: select `s`.
+- `Strain unit`: select `strain`, because this file already stores dimensionless strain.
+- `Baseline correction`: beginners can keep the default `start_mean`.
+- `Filter method`: beginners can start with `none`; try `moving_average` only if the waveform is visibly noisy.
+
+3. Bar parameters
+- `Incident bar diameter mm`: `20`
+- `Transmitted bar diameter mm`: `20`
+- `Elastic modulus GPa`: `207`
+- `Density kg/m3`: `7800`
+- `Incident gauge distance mm`: `839`
+- `Transmitted gauge distance mm`: `877`
+
+4. Specimen and sign convention
+- `Section shape`: select `cylinder`.
+- `Specimen diameter mm`: `2.5`
+- `Initial height/gauge length mm`: `9.5`
+- `Experiment type`: select `tension`.
+- `Sign convention`: select `tension_positive`.
+
+5. Processing and export
+- Keep `Enable automatic fine alignment` checked.
+- Do not check `Enable standard SHPB wave separation`; this dataset uses the regular impact-tension three-wave/two-wave workflow.
+- Click `Auto process`.
+- Review `Workflow status and result summary`, `Three-wave alignment`, and `Results`.
+- If the results are reasonable, click `Export Excel` or `Generate report`.

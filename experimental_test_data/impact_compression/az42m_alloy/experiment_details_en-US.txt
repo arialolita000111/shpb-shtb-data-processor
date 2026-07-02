@@ -11,3 +11,42 @@
 - Bar density: `7800 kg/m^3`
 - Incident-bar strain gauge distance to specimen end face: `1018 mm`
 - Transmitted-bar strain gauge distance to specimen end face: `741 mm`
+
+## Software Input Guide
+
+Applicable data files: `sample_01/raw_microstrain.xls`, `sample_02/raw_microstrain.xls`. Use `raw_voltage.xls` only if the voltage-to-microstrain calibration factor is known.
+
+1. Data import
+- Click `Import CSV/XLSX`, preferably choosing `raw_microstrain.xls`.
+- `Time column`: select `Time/s`.
+- `Incident bar column`: select `incident_bar_signal/με`.
+- `Transmitted bar column`: select `transmission_bar_signal/με`.
+
+2. Acquisition and preprocessing
+- `Time unit`: select `s`.
+- `Strain unit`: select `με`.
+- If you import `raw_voltage.xls`, select `voltage` for `Strain unit`, then enter the calibrated microstrain-per-volt factor in `Voltage conversion`.
+- `Baseline correction`: beginners can keep the default `start_mean`.
+- `Filter method`: beginners can start with `none`; try `moving_average` only if the waveform is visibly noisy.
+
+3. Bar parameters
+- `Incident bar diameter mm`: `20`
+- `Transmitted bar diameter mm`: `20`
+- `Elastic modulus GPa`: `210`
+- `Density kg/m3`: `7800`
+- `Incident gauge distance mm`: `1018`
+- `Transmitted gauge distance mm`: `741`
+
+4. Specimen and sign convention
+- `Section shape`: select `cylinder`.
+- `Specimen diameter mm`: `10`
+- `Initial height/gauge length mm`: `6`
+- `Experiment type`: select `compression`.
+- `Sign convention`: select `compression_positive`.
+
+5. Processing and export
+- Keep `Enable automatic fine alignment` checked.
+- Do not check `Enable standard SHPB wave separation`; this dataset uses the regular compression three-wave/two-wave workflow.
+- Click `Auto process`.
+- Review `Workflow status and result summary`, `Three-wave alignment`, and `Results`.
+- If the results are reasonable, click `Export Excel` or `Generate report`.

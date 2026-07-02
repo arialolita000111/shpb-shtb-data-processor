@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_LANGUAGE = "zh_CN"
+DEFAULT_LANGUAGE = "en_US"
 SUPPORTED_LANGUAGES = {
-    "zh_CN": "中文",
-    "en_US": "English",
+    "zh_CN": "中文(Chinese)",
+    "en_US": "English(英文)",
 }
 
 

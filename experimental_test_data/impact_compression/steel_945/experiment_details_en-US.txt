@@ -11,3 +11,43 @@
 - Bar density: `7800 kg/m^3`
 - Incident-bar strain gauge distance to specimen end face: `1020 mm`
 - Transmitted-bar strain gauge distance to specimen end face: `770 mm`
+
+## Software Input Guide
+
+Applicable data files: `sample_01/raw_microstrain.xls`, `sample_02/raw_microstrain.xlsx`. Use `raw_voltage.xls` or `raw_voltage.xlsx` only if the voltage-to-microstrain calibration factor is known. Batch-processing examples are in `steel_945_compression_batch_input/`.
+
+1. Data import
+- Click `Import CSV/XLSX`, preferably choosing `raw_microstrain.xls` or `raw_microstrain.xlsx`.
+- `Time column`: select `Time/s`.
+- `Incident bar column`: select `incident_bar_signal/με`.
+- `Transmitted bar column`: select `transmission_bar_signal/με`.
+
+2. Acquisition and preprocessing
+- `Time unit`: select `s`.
+- `Strain unit`: select `με`.
+- If you import a `raw_voltage` file, select `voltage` for `Strain unit`, then enter the calibrated microstrain-per-volt factor in `Voltage conversion`.
+- `Baseline correction`: beginners can keep the default `start_mean`.
+- `Filter method`: beginners can start with `none`; try `moving_average` only if the waveform is visibly noisy.
+
+3. Bar parameters
+- `Incident bar diameter mm`: `20`
+- `Transmitted bar diameter mm`: `20`
+- `Elastic modulus GPa`: `210`
+- `Density kg/m3`: `7800`
+- `Incident gauge distance mm`: `1020`
+- `Transmitted gauge distance mm`: `770`
+
+4. Specimen and sign convention
+- `Section shape`: select `cylinder`.
+- `Specimen diameter mm`: `8`
+- `Initial height/gauge length mm`: `4`
+- `Experiment type`: select `compression`.
+- `Sign convention`: select `compression_positive`.
+
+5. Processing and export
+- Keep `Enable automatic fine alignment` checked.
+- Do not check `Enable standard SHPB wave separation`; this dataset uses the regular compression three-wave/two-wave workflow.
+- Click `Auto process`.
+- Review `Workflow status and result summary`, `Three-wave alignment`, and `Results`.
+- To process multiple files in `steel_945_compression_batch_input/`, first export batch parameters from one representative dataset, then use `Batch process with current parameters`.
+- If the results are reasonable, click `Export Excel` or `Generate report`.

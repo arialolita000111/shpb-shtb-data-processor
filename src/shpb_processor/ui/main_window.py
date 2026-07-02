@@ -150,7 +150,12 @@ class MainWindow(QMainWindow):
         self._live_window_recalc_timer.timeout.connect(self._recalculate_windows_live)
 
         pg.setConfigOptions(antialias=True)
+        self._translated_text_widgets: list[tuple[object, str]] = []
+        self._translated_title_widgets: list[tuple[object, str]] = []
+        self._translated_tooltip_widgets: list[tuple[object, str]] = []
+        self._translated_tabs: list[tuple[QTabWidget, QWidget, str]] = []
         self._language_actions: dict[str, QAction] = {}
+        self._language_menu = None
         self._build_language_menu()
         self._build_ui()
         self._set_plot_style_controls(self._plot_style)
@@ -162,6 +167,7 @@ class MainWindow(QMainWindow):
 
     def _build_language_menu(self) -> None:
         language_menu = self.menuBar().addMenu(tr("menu.language"))
+        self._language_menu = language_menu
         group = QActionGroup(self)
         group.setExclusive(True)
         for code, display_name in SUPPORTED_LANGUAGES.items():
@@ -175,6 +181,7 @@ class MainWindow(QMainWindow):
 
     def _change_language(self, language: str) -> None:
         set_language(language)
+        self._retranslate_ui()
         for code, action in self._language_actions.items():
             action.setChecked(code == language)
         if hasattr(self, "log"):
@@ -184,6 +191,104 @@ class MainWindow(QMainWindow):
             tr("dialog.language_saved.title"),
             tr("dialog.language_saved.message", language=SUPPORTED_LANGUAGES.get(language, language)),
         )
+
+    def _refresh_language_menu_labels(self) -> None:
+        if self._language_menu is not None:
+            self._language_menu.setTitle(tr("menu.language"))
+        for code, action in self._language_actions.items():
+            action.setText(SUPPORTED_LANGUAGES.get(code, code))
+
+    def _retranslate_ui(self) -> None:
+        self.setWindowTitle(tr("app.title"))
+        self._refresh_language_menu_labels()
+        for widget, key in self._translated_text_widgets:
+            widget.setText(tr(key))
+        for widget, key in self._translated_title_widgets:
+            widget.setTitle(tr(key))
+        for widget, key in self._translated_tooltip_widgets:
+            widget.setToolTip(tr(key))
+        for tabs, widget, key in self._translated_tabs:
+            index = tabs.indexOf(widget)
+            if index >= 0:
+                tabs.setTabText(index, tr(key))
+        self._refresh_auto_time_column_label()
+        self._refresh_sequence_combo_labels()
+        self._refresh_dynamic_language_text()
+
+    def _translated_group(self, key: str) -> QGroupBox:
+        group = QGroupBox(tr(key))
+        self._translated_title_widgets.append((group, key))
+        return group
+
+    def _translated_button(self, key: str) -> QPushButton:
+        button = QPushButton(tr(key))
+        self._translated_text_widgets.append((button, key))
+        return button
+
+    def _translated_checkbox(self, key: str) -> QCheckBox:
+        checkbox = QCheckBox(tr(key))
+        self._translated_text_widgets.append((checkbox, key))
+        return checkbox
+
+    def _translated_label(self, key: str) -> QLabel:
+        label = QLabel(tr(key))
+        self._translated_text_widgets.append((label, key))
+        return label
+
+    def _add_translated_form_row(self, layout: QFormLayout, key: str, field: QWidget) -> None:
+        layout.addRow(self._translated_label(key), field)
+
+    def _set_translated_tooltip(self, widget: QWidget, key: str) -> None:
+        widget.setToolTip(tr(key))
+        self._translated_tooltip_widgets.append((widget, key))
+
+    def _add_translated_tab(self, tabs: QTabWidget, widget: QWidget, key: str) -> None:
+        tabs.addTab(widget, tr(key))
+        self._translated_tabs.append((tabs, widget, key))
+
+    def _refresh_auto_time_column_label(self) -> None:
+        if hasattr(self, "time_column") and self.time_column.count() > 0:
+            self.time_column.setItemText(0, self._auto_time_column_text())
+
+    def _refresh_sequence_combo_labels(self) -> None:
+        if not hasattr(self, "plot_color_sequence") or not hasattr(self, "plot_line_style_sequence"):
+            return
+        color_sequence = self._selected_sequence(self.plot_color_sequence, self._plot_style.color_sequence)
+        line_sequence = self._selected_sequence(self.plot_line_style_sequence, self._plot_style.line_style_sequence)
+        previous_state = self._updating_plot_style
+        self._updating_plot_style = True
+        try:
+            self._populate_color_sequence_combo()
+            self._populate_line_style_sequence_combo()
+            self._set_sequence_combo(self.plot_color_sequence, color_sequence, is_color=True)
+            self._set_sequence_combo(self.plot_line_style_sequence, line_sequence, is_color=False)
+        finally:
+            self._updating_plot_style = previous_state
+
+    def _refresh_dynamic_language_text(self) -> None:
+        if self.bundle is not None:
+            self._plot_all()
+            self._update_summary()
+            return
+        if self.dataframe is not None:
+            self._plot_imported_raw_waveform()
+            self._plot_segment_preview_from_current_windows()
+            return
+        self._set_default_plot_texts()
+
+    def _set_default_plot_texts(self) -> None:
+        if not hasattr(self, "raw_plot"):
+            return
+        self.raw_plot.setTitle(tr("plot.raw_preprocessed"))
+        self.segment_plot.setTitle(tr("plot.segment"))
+        self.dispersion_plot.setTitle(
+            tr("plot.dispersion_comparison") if self.dispersion_enabled.isChecked() else tr("plot.dispersion_disabled")
+        )
+        self.aligned_plot.setTitle(tr("plot.aligned"))
+        self.standard_wave_plot.setTitle(
+            tr("plot.standard_wave") if self.standard_wave_enabled.isChecked() else tr("plot.standard_wave_disabled")
+        )
+        self.result_plot.setTitle(tr("plot.result"))
 
     def _build_ui(self) -> None:
         root = QWidget()
@@ -205,32 +310,32 @@ class MainWindow(QMainWindow):
         content = QWidget()
         layout = QVBoxLayout(content)
 
-        file_group = QGroupBox(tr("group.import_data"))
+        file_group = self._translated_group("group.import_data")
         file_layout = QVBoxLayout(file_group)
         self.file_path = QLineEdit()
         self.file_path.setReadOnly(True)
         file_layout.addWidget(self.file_path)
         row = QHBoxLayout()
-        import_button = QPushButton(tr("button.import_data"))
+        import_button = self._translated_button("button.import_data")
         import_button.clicked.connect(self.load_file)
-        sample_button = QPushButton(tr("button.load_sample"))
+        sample_button = self._translated_button("button.load_sample")
         sample_button.clicked.connect(self.load_sample)
         row.addWidget(import_button)
         row.addWidget(sample_button)
         file_layout.addLayout(row)
         layout.addWidget(file_group)
 
-        column_group = QGroupBox(tr("group.columns"))
+        column_group = self._translated_group("group.columns")
         column_layout = QFormLayout(column_group)
         self.time_column = QComboBox()
         self.incident_column = QComboBox()
         self.transmitted_column = QComboBox()
-        column_layout.addRow(tr("label.time_column"), self.time_column)
-        column_layout.addRow(tr("label.incident_column"), self.incident_column)
-        column_layout.addRow(tr("label.transmitted_column"), self.transmitted_column)
+        self._add_translated_form_row(column_layout, "label.time_column", self.time_column)
+        self._add_translated_form_row(column_layout, "label.incident_column", self.incident_column)
+        self._add_translated_form_row(column_layout, "label.transmitted_column", self.transmitted_column)
         layout.addWidget(column_group)
 
-        acquisition_group = QGroupBox(tr("group.acquisition"))
+        acquisition_group = self._translated_group("group.acquisition")
         acquisition_layout = QFormLayout(acquisition_group)
         self.sampling_frequency = _spin(1.0, 100_000_000.0, 5_000_000.0, 0)
         self.time_unit = _combo(["s", "ms", "μs"], "μs")
@@ -238,33 +343,33 @@ class MainWindow(QMainWindow):
         self.voltage_to_microstrain = _spin(1e-9, 1_000_000_000.0, 1000.0, 6)
         self.voltage_to_microstrain.setSingleStep(100.0)
         self.voltage_to_microstrain.setSuffix(" με/V")
-        self.voltage_to_microstrain.setToolTip(tr("tooltip.voltage_to_microstrain"))
+        self._set_translated_tooltip(self.voltage_to_microstrain, "tooltip.voltage_to_microstrain")
         self.baseline_method = _combo(["start_mean", "window_mean", "linear_drift", "polynomial", "manual", "none"], "start_mean")
         self.filter_method = _combo(["none", "moving_average", "savgol", "butterworth", "median"], "none")
         self.filter_window = _int_spin(1, 999, 11)
         self.filter_cutoff = _spin(1.0, 10_000_000.0, 100_000.0, 0)
-        self.dispersion_enabled = QCheckBox(tr("check.dispersion_enabled"))
+        self.dispersion_enabled = self._translated_checkbox("check.dispersion_enabled")
         self.dispersion_enabled.setChecked(False)
-        self.standard_wave_enabled = QCheckBox(tr("check.standard_wave_enabled"))
+        self.standard_wave_enabled = self._translated_checkbox("check.standard_wave_enabled")
         self.standard_wave_enabled.setChecked(False)
-        self.auto_micro_align = QCheckBox(tr("check.auto_micro_align"))
+        self.auto_micro_align = self._translated_checkbox("check.auto_micro_align")
         self.auto_micro_align.setChecked(True)
         self.alignment_objective = _combo(["force_balance", "hybrid", "wave_relation"], "force_balance")
-        acquisition_layout.addRow(tr("label.sampling_frequency_hz"), self.sampling_frequency)
-        acquisition_layout.addRow(tr("label.time_unit"), self.time_unit)
-        acquisition_layout.addRow(tr("label.strain_unit"), self.strain_unit)
-        acquisition_layout.addRow(tr("label.voltage_conversion"), self.voltage_to_microstrain)
-        acquisition_layout.addRow(tr("label.baseline_method"), self.baseline_method)
-        acquisition_layout.addRow(tr("label.filter_method"), self.filter_method)
-        acquisition_layout.addRow(tr("label.filter_window_points"), self.filter_window)
-        acquisition_layout.addRow(tr("label.filter_cutoff_hz"), self.filter_cutoff)
-        acquisition_layout.addRow(tr("label.dispersion_correction"), self.dispersion_enabled)
-        acquisition_layout.addRow(tr("label.wave_separation"), self.standard_wave_enabled)
-        acquisition_layout.addRow(tr("label.auto_alignment"), self.auto_micro_align)
-        acquisition_layout.addRow(tr("label.alignment_objective"), self.alignment_objective)
+        self._add_translated_form_row(acquisition_layout, "label.sampling_frequency_hz", self.sampling_frequency)
+        self._add_translated_form_row(acquisition_layout, "label.time_unit", self.time_unit)
+        self._add_translated_form_row(acquisition_layout, "label.strain_unit", self.strain_unit)
+        self._add_translated_form_row(acquisition_layout, "label.voltage_conversion", self.voltage_to_microstrain)
+        self._add_translated_form_row(acquisition_layout, "label.baseline_method", self.baseline_method)
+        self._add_translated_form_row(acquisition_layout, "label.filter_method", self.filter_method)
+        self._add_translated_form_row(acquisition_layout, "label.filter_window_points", self.filter_window)
+        self._add_translated_form_row(acquisition_layout, "label.filter_cutoff_hz", self.filter_cutoff)
+        self._add_translated_form_row(acquisition_layout, "label.dispersion_correction", self.dispersion_enabled)
+        self._add_translated_form_row(acquisition_layout, "label.wave_separation", self.standard_wave_enabled)
+        self._add_translated_form_row(acquisition_layout, "label.auto_alignment", self.auto_micro_align)
+        self._add_translated_form_row(acquisition_layout, "label.alignment_objective", self.alignment_objective)
         layout.addWidget(acquisition_group)
 
-        bar_group = QGroupBox(tr("group.bar_parameters"))
+        bar_group = self._translated_group("group.bar_parameters")
         bar_layout = QFormLayout(bar_group)
         self.incident_diameter = _spin(0.1, 200.0, 14.5, 3)
         self.transmitted_diameter = _spin(0.1, 200.0, 14.5, 3)
@@ -273,21 +378,21 @@ class MainWindow(QMainWindow):
         self.wave_speed = _spin(0.0, 20000.0, 5063.7, 2)
         self.wave_speed.setReadOnly(True)
         self.wave_speed.setButtonSymbols(QAbstractSpinBox.NoButtons)
-        self.wave_speed.setToolTip(tr("tooltip.wave_speed"))
+        self._set_translated_tooltip(self.wave_speed, "tooltip.wave_speed")
         self.incident_distance = _spin(0.0, 10000.0, 500.0, 3)
         self.transmitted_distance = _spin(0.0, 10000.0, 250.0, 3)
         self.transmitted_free_end_distance = _spin(0.0, 10000.0, 750.0, 3)
-        bar_layout.addRow(tr("label.incident_diameter_mm"), self.incident_diameter)
-        bar_layout.addRow(tr("label.transmitted_diameter_mm"), self.transmitted_diameter)
-        bar_layout.addRow(tr("label.elastic_modulus_gpa"), self.elastic_modulus)
-        bar_layout.addRow(tr("label.density_kg_m3"), self.density)
-        bar_layout.addRow(tr("label.wave_speed_m_s"), self.wave_speed)
-        bar_layout.addRow(tr("label.incident_gauge_distance_mm"), self.incident_distance)
-        bar_layout.addRow(tr("label.transmitted_gauge_distance_mm"), self.transmitted_distance)
-        bar_layout.addRow(tr("label.transmitted_free_end_distance_mm"), self.transmitted_free_end_distance)
+        self._add_translated_form_row(bar_layout, "label.incident_diameter_mm", self.incident_diameter)
+        self._add_translated_form_row(bar_layout, "label.transmitted_diameter_mm", self.transmitted_diameter)
+        self._add_translated_form_row(bar_layout, "label.elastic_modulus_gpa", self.elastic_modulus)
+        self._add_translated_form_row(bar_layout, "label.density_kg_m3", self.density)
+        self._add_translated_form_row(bar_layout, "label.wave_speed_m_s", self.wave_speed)
+        self._add_translated_form_row(bar_layout, "label.incident_gauge_distance_mm", self.incident_distance)
+        self._add_translated_form_row(bar_layout, "label.transmitted_gauge_distance_mm", self.transmitted_distance)
+        self._add_translated_form_row(bar_layout, "label.transmitted_free_end_distance_mm", self.transmitted_free_end_distance)
         layout.addWidget(bar_group)
 
-        specimen_group = QGroupBox(tr("group.specimen_sign"))
+        specimen_group = self._translated_group("group.specimen_sign")
         specimen_layout = QFormLayout(specimen_group)
         self.specimen_id = QLineEdit("sample_001")
         self.specimen_shape = _combo(["cylinder", "rectangle", "custom"], "cylinder")
@@ -299,23 +404,23 @@ class MainWindow(QMainWindow):
         self.specimen_length = _spin(0.01, 200.0, 8.0, 3)
         self.experiment_type = _combo(["compression", "tension"], "compression")
         self.sign_convention = _combo(["compression_positive", "tension_positive", "raw"], "compression_positive")
-        specimen_layout.addRow(tr("label.specimen_id"), self.specimen_id)
-        specimen_layout.addRow(tr("label.specimen_shape"), self.specimen_shape)
-        specimen_layout.addRow(tr("label.specimen_diameter_mm"), self.specimen_diameter)
-        specimen_layout.addRow(tr("label.section_length_mm"), self.specimen_width)
-        specimen_layout.addRow(tr("label.section_width_mm"), self.specimen_thickness)
-        specimen_layout.addRow(tr("label.section_area_mm2"), self.specimen_area)
-        specimen_layout.addRow(tr("label.initial_height_gauge_mm"), self.specimen_length)
-        specimen_layout.addRow(tr("label.experiment_type"), self.experiment_type)
-        specimen_layout.addRow(tr("label.sign_convention"), self.sign_convention)
+        self._add_translated_form_row(specimen_layout, "label.specimen_id", self.specimen_id)
+        self._add_translated_form_row(specimen_layout, "label.specimen_shape", self.specimen_shape)
+        self._add_translated_form_row(specimen_layout, "label.specimen_diameter_mm", self.specimen_diameter)
+        self._add_translated_form_row(specimen_layout, "label.section_length_mm", self.specimen_width)
+        self._add_translated_form_row(specimen_layout, "label.section_width_mm", self.specimen_thickness)
+        self._add_translated_form_row(specimen_layout, "label.section_area_mm2", self.specimen_area)
+        self._add_translated_form_row(specimen_layout, "label.initial_height_gauge_mm", self.specimen_length)
+        self._add_translated_form_row(specimen_layout, "label.experiment_type", self.experiment_type)
+        self._add_translated_form_row(specimen_layout, "label.sign_convention", self.sign_convention)
         self._update_specimen_geometry_enabled()
         layout.addWidget(specimen_group)
 
-        style_group = QGroupBox(tr("group.plot_style"))
+        style_group = self._translated_group("group.plot_style")
         style_layout = QFormLayout(style_group)
         self.plot_style_preset = _combo(["dark_screen", "light_report", "nature_style", "high_contrast"], "dark_screen")
         self.plot_background = _combo(["#000000", "#ffffff", "#f5f5f5"], "#000000")
-        self.plot_grid_enabled = QCheckBox(tr("check.show_grid"))
+        self.plot_grid_enabled = self._translated_checkbox("check.show_grid")
         self.plot_grid_enabled.setChecked(True)
         self.plot_default_width = _spin(0.1, 10.0, 1.5, 2)
         self.plot_default_width.setSingleStep(0.1)
@@ -327,43 +432,43 @@ class MainWindow(QMainWindow):
         self._populate_line_style_sequence_combo()
         self.plot_curve_overrides = QLineEdit()
         self.plot_curve_overrides.setPlaceholderText("result.standard_wave=#222222,solid,2.2; standard.gauge1_right=#444444,dash")
-        style_layout.addRow(tr("label.style_preset"), self.plot_style_preset)
-        style_layout.addRow(tr("label.background_color"), self.plot_background)
-        style_layout.addRow(tr("label.grid"), self.plot_grid_enabled)
-        style_layout.addRow(tr("label.default_line_width"), self.plot_default_width)
-        style_layout.addRow(tr("label.color_sequence"), self.plot_color_sequence)
-        style_layout.addRow(tr("label.line_style_sequence"), self.plot_line_style_sequence)
-        style_layout.addRow(tr("label.curve_overrides"), self.plot_curve_overrides)
+        self._add_translated_form_row(style_layout, "label.style_preset", self.plot_style_preset)
+        self._add_translated_form_row(style_layout, "label.background_color", self.plot_background)
+        self._add_translated_form_row(style_layout, "label.grid", self.plot_grid_enabled)
+        self._add_translated_form_row(style_layout, "label.default_line_width", self.plot_default_width)
+        self._add_translated_form_row(style_layout, "label.color_sequence", self.plot_color_sequence)
+        self._add_translated_form_row(style_layout, "label.line_style_sequence", self.plot_line_style_sequence)
+        self._add_translated_form_row(style_layout, "label.curve_overrides", self.plot_curve_overrides)
         layout.addWidget(style_group)
 
         action_row = QHBoxLayout()
-        process_button = QPushButton(tr("button.process_auto"))
+        process_button = self._translated_button("button.process_auto")
         process_button.clicked.connect(self.process_auto)
-        recalc_button = QPushButton(tr("button.recalculate_windows"))
+        recalc_button = self._translated_button("button.recalculate_windows")
         recalc_button.clicked.connect(self.recalculate_with_windows)
         action_row.addWidget(process_button)
         action_row.addWidget(recalc_button)
         layout.addLayout(action_row)
 
         export_row = QHBoxLayout()
-        export_button = QPushButton(tr("button.export_excel"))
+        export_button = self._translated_button("button.export_excel")
         export_button.clicked.connect(self.export_results)
-        report_button = QPushButton(tr("button.generate_report"))
+        report_button = self._translated_button("button.generate_report")
         report_button.clicked.connect(self.generate_report_package)
         export_row.addWidget(export_button)
         export_row.addWidget(report_button)
         layout.addLayout(export_row)
 
         template_row = QHBoxLayout()
-        template_export_button = QPushButton(tr("button.export_batch_template"))
+        template_export_button = self._translated_button("button.export_batch_template")
         template_export_button.clicked.connect(self.export_batch_template)
-        template_load_button = QPushButton(tr("button.load_batch_template"))
+        template_load_button = self._translated_button("button.load_batch_template")
         template_load_button.clicked.connect(self.load_batch_template)
         template_row.addWidget(template_export_button)
         template_row.addWidget(template_load_button)
         layout.addLayout(template_row)
 
-        batch_button = QPushButton(tr("button.run_batch_current"))
+        batch_button = self._translated_button("button.run_batch_current")
         batch_button.clicked.connect(self.run_batch_with_current_template)
         layout.addWidget(batch_button)
         layout.addStretch()
@@ -377,7 +482,7 @@ class MainWindow(QMainWindow):
         tabs = QTabWidget()
         self.center_tabs = tabs
         self.preview_table = QTableWidget()
-        tabs.addTab(self.preview_table, tr("tab.data_preview"))
+        self._add_translated_tab(tabs, self.preview_table, "tab.data_preview")
         self.raw_plot = pg.PlotWidget(title=tr("plot.raw_preprocessed"))
         self.segment_plot = pg.PlotWidget(title=tr("plot.segment"))
         self.dispersion_plot = pg.PlotWidget(title=tr("plot.dispersion_comparison"))
@@ -385,49 +490,49 @@ class MainWindow(QMainWindow):
         self.standard_wave_plot = pg.PlotWidget(title=tr("plot.standard_wave"))
         self.result_plot = pg.PlotWidget(title=tr("plot.result"))
         for title, plot in [
-            (tr("tab.raw_waveform"), self.raw_plot),
-            (tr("tab.segment"), self.segment_plot),
-            (tr("tab.dispersion_comparison"), self.dispersion_plot),
-            (tr("tab.aligned"), self.aligned_plot),
-            (tr("tab.standard_wave"), self.standard_wave_plot),
-            (tr("tab.results"), self.result_plot),
+            ("tab.raw_waveform", self.raw_plot),
+            ("tab.segment", self.segment_plot),
+            ("tab.dispersion_comparison", self.dispersion_plot),
+            ("tab.aligned", self.aligned_plot),
+            ("tab.standard_wave", self.standard_wave_plot),
+            ("tab.results", self.result_plot),
         ]:
             plot.showGrid(x=True, y=True, alpha=0.25)
             plot.addLegend(offset=(12, 12), brush=(0, 0, 0, 130), labelTextColor="w")
-            tabs.addTab(plot, title)
+            self._add_translated_tab(tabs, plot, title)
         return tabs
 
     def _build_right_panel(self) -> QWidget:
         panel = QWidget()
         layout = QVBoxLayout(panel)
-        window_group = QGroupBox(tr("group.wave_windows_us"))
+        window_group = self._translated_group("group.wave_windows_us")
         grid = QGridLayout(window_group)
         labels = [
-            tr("label.incident_start"),
-            tr("label.incident_end"),
-            tr("label.reflected_start"),
-            tr("label.reflected_end"),
-            tr("label.transmitted_start"),
-            tr("label.transmitted_end"),
+            "label.incident_start",
+            "label.incident_end",
+            "label.reflected_start",
+            "label.reflected_end",
+            "label.transmitted_start",
+            "label.transmitted_end",
         ]
         self.window_spins: list[QDoubleSpinBox] = []
-        for index, label in enumerate(labels):
+        for index, label_key in enumerate(labels):
             spin = _spin(0.0, 1_000_000.0, 0.0, 3)
             self.window_spins.append(spin)
-            grid.addWidget(QLabel(label), index, 0)
+            grid.addWidget(self._translated_label(label_key), index, 0)
             grid.addWidget(spin, index, 1)
         layout.addWidget(window_group)
 
-        profile_group = QGroupBox(tr("group.alignment_profiles"))
+        profile_group = self._translated_group("group.alignment_profiles")
         profile_layout = QGridLayout(profile_group)
         self.alignment_profile_name = QLineEdit("default")
         self.alignment_profile_combo = QComboBox()
-        self.save_alignment_profile_button = QPushButton(tr("button.save"))
-        self.load_alignment_profile_button = QPushButton(tr("button.load"))
-        self.delete_alignment_profile_button = QPushButton(tr("button.delete"))
-        profile_layout.addWidget(QLabel(tr("label.name")), 0, 0)
+        self.save_alignment_profile_button = self._translated_button("button.save")
+        self.load_alignment_profile_button = self._translated_button("button.load")
+        self.delete_alignment_profile_button = self._translated_button("button.delete")
+        profile_layout.addWidget(self._translated_label("label.name"), 0, 0)
         profile_layout.addWidget(self.alignment_profile_name, 0, 1, 1, 2)
-        profile_layout.addWidget(QLabel(tr("label.existing")), 1, 0)
+        profile_layout.addWidget(self._translated_label("label.existing"), 1, 0)
         profile_layout.addWidget(self.alignment_profile_combo, 1, 1, 1, 2)
         profile_layout.addWidget(self.save_alignment_profile_button, 2, 0)
         profile_layout.addWidget(self.load_alignment_profile_button, 2, 1)
@@ -437,7 +542,7 @@ class MainWindow(QMainWindow):
 
         self.summary = QTextEdit()
         self.summary.setReadOnly(True)
-        layout.addWidget(QLabel(tr("label.status_summary")))
+        layout.addWidget(self._translated_label("label.status_summary"))
         layout.addWidget(self.summary)
         return panel
 
@@ -1631,6 +1736,7 @@ class MainWindow(QMainWindow):
         else:
             self.result_plot.plot(b.three_wave.strain, b.three_wave.engineering_stress_pa / 1e6, pen=self._pen("result.three_wave", 0, width=2), name="three-wave")
             self.result_plot.plot(b.two_wave.strain, b.two_wave.engineering_stress_pa / 1e6, pen=self._pen("result.two_wave", 1, width=2), name="two-wave")
+        self.result_plot.setTitle(tr("plot.result"))
         self.result_plot.setLabel("bottom", tr("axis.engineering_strain"))
         self.result_plot.setLabel("left", tr("axis.engineering_stress"), units="MPa")
 
@@ -1660,6 +1766,7 @@ class MainWindow(QMainWindow):
         plot_item = self.aligned_plot.getPlotItem()
         aligned = bundle.aligned
         time_us = aligned.time_s * 1e6
+        self.aligned_plot.setTitle(tr("plot.aligned"))
         plot_item.plot(time_us, aligned.incident * 1e6, pen=self._pen("aligned.incident", 0, width=1.5), name="incident")
         plot_item.plot(time_us, aligned.reflected * 1e6, pen=self._pen("aligned.reflected", 1, width=1.5), name="reflected")
         plot_item.plot(time_us, aligned.transmitted * 1e6, pen=self._pen("aligned.transmitted", 2, width=1.5), name="transmitted")
