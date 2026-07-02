@@ -12,3 +12,42 @@
 - Incident-bar strain gauge distance to specimen end face: `250 mm`
 - Transmitted-bar strain gauge distance to specimen end face: `250 mm`
 - Transmitted-bar strain gauge distance to free end: `1350 mm`
+
+## Software Input Guide
+
+Applicable data file: `gauge_strain_records.csv`. Files under `manual_processing_example/` are reference results from manual processing and should not be used as the raw software input.
+
+1. Data import
+- Click `Import CSV/XLSX` / `导入 CSV/XLSX`, then choose `gauge_strain_records.csv`.
+- `Time column` / `时间列`: select `time_s`.
+- `Incident bar column` / `入射杆列`: select `gauge1_incident_bar_strain`.
+- `Transmitted bar column` / `透射杆列`: select `gauge2_transmission_bar_strain`.
+
+2. Acquisition and preprocessing
+- `Time unit` / `时间单位`: select `s`.
+- `Strain unit` / `应变单位`: select `strain`.
+- `Baseline correction` / `基线修正`: beginners can keep the default `start_mean`.
+- `Filter method` / `滤波方式`: beginners can start with `none`; try `moving_average` only if the waveform is visibly noisy.
+
+3. Bar parameters
+- `Incident bar diameter mm` / `入射杆直径 mm`: `50`
+- `Transmitted bar diameter mm` / `透射杆直径 mm`: `50`
+- `Elastic modulus GPa` / `弹性模量 GPa`: `206`
+- `Density kg/m3` / `密度 kg/m3`: `7850`
+- `Incident gauge distance mm` / `入射应变片距端 mm`: `250`
+- `Transmitted gauge distance mm` / `透射应变片距端 mm`: `250`
+- `Transmitted gauge to free end mm` / `透射片距自由端 mm`: `1350`
+
+4. Specimen and sign convention
+- `Section shape` / `截面形状`: select `cylinder`.
+- `Specimen diameter mm` / `试样直径 mm`: `30`
+- `Initial height/gauge length mm` / `初始高度/标距 mm`: `15`
+- `Experiment type` / `实验类型`: select `compression`.
+- `Sign convention` / `符号约定`: select `compression_positive`.
+
+5. Wave-separation processing and export
+- Check `Enable standard SHPB wave separation` / `启用标准SHPB波形分离`.
+- Keep `Enable automatic fine alignment` / `启用自动微调对齐` checked.
+- Click `Auto process` / `自动处理`.
+- Focus your review on `Standard wave separation` / `标准波形分离`, `Results` / `计算结果`, and `Workflow status and result summary` / `流程状态与结果摘要`.
+- If the results are reasonable, click `Export Excel` / `导出 Excel` or `Generate report` / `生成报告`.

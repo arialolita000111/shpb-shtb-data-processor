@@ -11,3 +11,42 @@
 - 杆件密度：`7800 kg/m^3`
 - 入射杆应变片至试样端面的距离：`1018 mm`
 - 透射杆应变片至试样端面的距离：`741 mm`
+
+## 软件页面填写指南
+
+适用数据文件：`sample_01/raw_strain.csv`、`sample_02/raw_strain.xlsx`。`raw_voltage.csv` 或 `raw_voltage.xlsx` 为电压信号文件，仅在已知电压到应变换算系数时使用。
+
+1. 数据导入
+- 点击 `Import CSV/XLSX` / `导入 CSV/XLSX`，优先选择 `raw_strain.csv` 或 `raw_strain.xlsx`。
+- `Time column` / `时间列`：选择 `Time/s`。
+- `Incident bar column` / `入射杆列`：选择入射杆应变列，例如 `incident_bar_signal/ε`。
+- `Transmitted bar column` / `透射杆列`：选择透射杆应变列，例如 `transmission_bar_signal/ε`。
+
+2. 采集与预处理
+- `Time unit` / `时间单位`：选择 `s`。
+- `Strain unit` / `应变单位`：选择 `strain`。
+- 如果导入 `raw_voltage` 文件，则 `Strain unit` / `应变单位` 选择 `voltage`，并在 `Voltage conversion` / `电压换算` 中填入标定得到的应变换算系数。
+- `Baseline correction` / `基线修正`：新手建议先使用默认 `start_mean`。
+- `Filter method` / `滤波方式`：新手建议先选 `none`；如果波形噪声明显，再尝试 `moving_average`。
+
+3. 杆件参数
+- `Incident bar diameter mm` / `入射杆直径 mm`：`20`
+- `Transmitted bar diameter mm` / `透射杆直径 mm`：`20`
+- `Elastic modulus GPa` / `弹性模量 GPa`：`210`
+- `Density kg/m3` / `密度 kg/m3`：`7800`
+- `Incident gauge distance mm` / `入射应变片距端 mm`：`1018`
+- `Transmitted gauge distance mm` / `透射应变片距端 mm`：`741`
+
+4. 试样与符号
+- `Section shape` / `截面形状`：选择 `cylinder`。
+- `Specimen diameter mm` / `试样直径 mm`：`10`
+- `Initial height/gauge length mm` / `初始高度/标距 mm`：`4`
+- `Experiment type` / `实验类型`：选择 `compression`。
+- `Sign convention` / `符号约定`：建议选择 `compression_positive`。
+
+5. 处理与导出
+- 保持 `Enable automatic fine alignment` / `启用自动微调对齐` 为勾选状态。
+- 不勾选 `Enable standard SHPB wave separation` / `启用标准SHPB波形分离`，该数据按常规压缩三波/两波流程处理。
+- 点击 `Auto process` / `自动处理`。
+- 复核 `Workflow status and result summary` / `流程状态与结果摘要`、`Three-wave alignment` / `三波对齐` 和 `Results` / `计算结果`。
+- 若结果合理，点击 `Export Excel` / `导出 Excel` 或 `Generate report` / `生成报告` 导出结果。
